@@ -13,61 +13,74 @@ var scale = d3.scaleLinear()
   .domain([0, 4])
   .range([0, 100])
 
-d3.csv('whiskies.csv')
-  .row(function(d) {
-      d.Body = +d.Body;
-      d.Sweetness = +d.Sweetness;
-      d.Smoky = +d.Smoky;
-      d.Medicinal = +d.Medicinal;
-      d.Tobacco = +d.Tobacco;
-      d.Honey = +d.Honey;
-      d.Spicy = +d.Spicy;
-      d.Winey = +d.Winey;
-      d.Nutty = +d.Nutty;
-      d.Malty = +d.Malty;
-      d.Fruity = +d.Fruity;
-      d.Floral = +d.Floral;
-      return d;
-  })
-  .get(function(error, rows) {
-    var star = d3.starPlot()
-      .width(width)
-      .accessors([
-        function(d) { return scale(d.Body); },
-        function(d) { return scale(d.Sweetness); },
-        function(d) { return scale(d.Smoky); },
-        function(d) { return scale(d.Honey); },
-        function(d) { return scale(d.Spicy); },
-        function(d) { return scale(d.Nutty); },
-        function(d) { return scale(d.Malty); },
-        function(d) { return scale(d.Fruity); },
-        function(d) { return scale(d.Floral); },
-      ])
-      .labels([
-        'Body',
-        'Sweetness',
-        'Smoky',
-        'Honey',
-        'Spicy',
-        'Nutty',
-        'Malty',
-        'Fruity',
-        'Floral',
-      ])
-      .title(function(d) { return d.Distillery; })
-      .margin(margin)
-      .labelMargin(labelMargin)
+function drawStarplot(noOfRows) {
+  d3.csv('whiskies.csv')
+    .row(function(d) {
+        d.Body = +d.Body;
+        d.Sweetness = +d.Sweetness;
+        d.Smoky = +d.Smoky;
+        d.Medicinal = +d.Medicinal;
+        d.Tobacco = +d.Tobacco;
+        d.Honey = +d.Honey;
+        d.Spicy = +d.Spicy;
+        d.Winey = +d.Winey;
+        d.Nutty = +d.Nutty;
+        d.Malty = +d.Malty;
+        d.Fruity = +d.Fruity;
+        d.Floral = +d.Floral;
+        return d;
+    })
+    .get(function(error, rows) {
+      let labels = [];
+      let accessors = [];
+      let pp = 0;
+      for (let x in rows[0]) {
+        pp++;
+        if (pp > 3 + noOfRows || pp > 14) break;
+        if (pp < 3) continue;
+        labels.push(x);
+        accessors.push(function(d) { return scale(d[x]); })
+      }
 
-    rows.forEach(function(d, i) {
+      var star = d3.starPlot()
+        .width(width)
+        .accessors(accessors)
+        .labels(labels)
+        .title(function(d) { return d.Distillery; })
+        .margin(margin)
+        .labelMargin(labelMargin)
 
-      if (i > 3) return;
+      rows.forEach(function(d, i) {
 
-      d3.select('#target').append('svg')
-        .attr('class', 'chart')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', width + margin.top + margin.bottom)
-        .append('g')
-          .datum(d)
-          .call(star)
+        if (i > 3) return; // draw 4 starplots (4 rows of data)
+
+        d3.select('#target').append('svg')
+          .attr('class', 'chart')
+          .attr('width', width + margin.left + margin.right)
+          .attr('height', width + margin.top + margin.bottom)
+          .append('g')
+            .datum(d)
+            .call(star)
+      });
     });
-  });
+}
+
+let currentNoOfRows = 6;
+drawStarplot(currentNoOfRows);
+$('#guidelineToggle').on('click', function() { $('.star-axis').toggle(); });
+
+$('#moreDataButton').on('click', function() {
+  if (currentNoOfRows > 10) return;
+  currentNoOfRows++;
+
+  $('#target svg').remove();
+  drawStarplot(currentNoOfRows)
+});
+
+$('#lessDataButton').on('click', function() {
+  if (currentNoOfRows < 4) return;
+  currentNoOfRows--;
+
+  $('#target svg').remove();
+  drawStarplot(currentNoOfRows)
+});
