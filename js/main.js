@@ -65,8 +65,63 @@ function drawStarplot(noOfRows) {
     });
 }
 
+function drawFlowerplot(noOfRows) {
+  d3.csv('whiskies.csv')
+    .row(function(d) {
+        d.Body = +d.Body;
+        d.Sweetness = +d.Sweetness;
+        d.Smoky = +d.Smoky;
+        d.Medicinal = +d.Medicinal;
+        d.Tobacco = +d.Tobacco;
+        d.Honey = +d.Honey;
+        d.Spicy = +d.Spicy;
+        d.Winey = +d.Winey;
+        d.Nutty = +d.Nutty;
+        d.Malty = +d.Malty;
+        d.Fruity = +d.Fruity;
+        d.Floral = +d.Floral;
+        return d;
+    })
+    .get(function(error, rows) {
+      let labels = [];
+      let accessors = [];
+      let pp = 0;
+
+      for (let x in rows[0]) {
+        pp++;
+        if (pp > 3 + noOfRows || pp > 14) break;
+        if (pp < 3) continue;
+        labels.push(x);
+        accessors.push(function(d) { return scale(d[x]); })
+      }
+
+      var flower = d3.flowerPlot()
+        .width(width)
+        .accessors(accessors)
+        .labels(labels)
+        .title(function(d) { return d.Distillery; })
+        .margin(margin)
+        .labelMargin(labelMargin)
+
+      rows.forEach(function(d, i) {
+
+        if (i > 3) return; // draw 4 starplots (4 rows of data)
+
+        d3.select('#flowerTarget').append('svg')
+          .attr('class', 'chart')
+          .attr('width', width + margin.left + margin.right)
+          .attr('height', width + margin.top + margin.bottom)
+          .append('g')
+            .datum(d)
+            .call(flower)
+      });
+    });
+}
+
 let currentNoOfRows = 6;
 drawStarplot(currentNoOfRows);
+drawFlowerplot(6);
+
 $('#guidelineToggle').on('click', function() { $('.star-axis').toggle(); });
 
 $('#moreDataButton').on('click', function() {

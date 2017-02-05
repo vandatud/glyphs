@@ -20,7 +20,7 @@ body {
 .slide .source > a {
   font-weight: normal;
 }
-#target {
+#target, #flowerTarget{
   margin-top: 40px;
 }
 
