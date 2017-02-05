@@ -52,7 +52,7 @@ d3.flowerPlot = function() {
       y = l * Math.sin(r);
 
       g.append('line')
-        .attr('class', 'star-axis')
+        .attr('class', 'flower-axis')
         .attr('x1', origin[0])
         .attr('y1', origin[1])
         .attr('x2', origin[0] + x)
@@ -73,7 +73,7 @@ d3.flowerPlot = function() {
       y = (l + labelMargin) * Math.sin(r);
 
       g.append('text')
-        .attr('class', 'star-label')
+        .attr('class', 'label')
         .attr('x', origin[0] + x)
         .attr('y', origin[1] + y)
         .text(labels[i])
@@ -87,12 +87,13 @@ d3.flowerPlot = function() {
   function drawChart() {
     // circle in center of the diagram
     g.append('circle')
-      .attr('class', 'star-origin')
+      .attr('class', 'origin')
       .attr('cx', origin[0])
       .attr('cy', origin[1])
       .attr('r', 2);
 
     let path = d3.radialLine();
+    let color = d3.scaleOrdinal(d3.schemeCategory10);
 
     let r = Math.PI / 2;
 
@@ -105,22 +106,19 @@ d3.flowerPlot = function() {
       let offset = origin[1] + scale(d(datum)) / 2;
 
       g.append('ellipse')
+        .attr('class', 'flower-path')
+        .attr('fill', color(d(datum)))
         .attr('cx', 0)
         .attr('cy', -scale(d(datum)) / 2)
         .attr('rx', 10)
         .attr('ry', scale(d(datum)) / 2)
-        .attr('transform', 'translate(' + origin[0] + ',' + origin[1] +')' + 'rotate(' + r * 57 + ')')
+        .attr('transform', 'translate('+ origin[0] +','+ origin[1] +')rotate('+ r * 57 +')');
 
       r += radians;
     });
 
-    // g.append('path')
-    //   .attr('class', 'star-path')
-    //   .attr('transform', 'translate(' + origin[0] + ',' + origin[1] + ')')
-    //   .attr('d', path(pathData) + 'Z');
-
     g.append('text')
-      .attr('class', 'star-title')
+      .attr('class', 'title')
       .attr('x', origin[0])
       .attr('y', -(margin.top / 2))
       .text(title(datum))

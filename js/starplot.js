@@ -73,7 +73,7 @@ d3.starPlot = function() {
       y = (l + labelMargin) * Math.sin(r);
 
       g.append('text')
-        .attr('class', 'star-label')
+        .attr('class', 'label')
         .attr('x', origin[0] + x)
         .attr('y', origin[1] + y)
         .text(labels[i])
@@ -86,7 +86,7 @@ d3.starPlot = function() {
 
   function drawChart() {
     g.append('circle')
-      .attr('class', 'star-origin')
+      .attr('class', 'origin')
       .attr('cx', origin[0])
       .attr('cy', origin[1])
       .attr('r', 2);
@@ -111,7 +111,7 @@ d3.starPlot = function() {
       .attr('d', path(pathData) + 'Z');
 
     g.append('text')
-      .attr('class', 'star-title')
+      .attr('class', 'title')
       .attr('x', origin[0])
       .attr('y', -(margin.top / 2))
       .text(title(datum))

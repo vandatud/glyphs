@@ -118,24 +118,40 @@ function drawFlowerplot(noOfRows) {
     });
 }
 
-let currentNoOfRows = 6;
-drawStarplot(currentNoOfRows);
-drawFlowerplot(6);
+let currentNoOfRowsStar = 6;
+let currentNoOfRowsFlower = 6;
+
+drawStarplot(currentNoOfRowsStar);
+drawFlowerplot(currentNoOfRowsFlower);
 
 $('#guidelineToggle').on('click', function() { $('.star-axis').toggle(); });
+$('#flowerGuidelineToggle').on('click', function() { $('.flower-axis').toggle(); });
 
 $('#moreDataButton').on('click', function() {
-  if (currentNoOfRows > 10) return;
-  currentNoOfRows++;
+  if (currentNoOfRowsStar > 10) return;
+  currentNoOfRowsStar++;
 
   $('#target svg').remove();
-  drawStarplot(currentNoOfRows)
+  drawStarplot(currentNoOfRowsStar)
 });
-
 $('#lessDataButton').on('click', function() {
-  if (currentNoOfRows < 4) return;
-  currentNoOfRows--;
+  if (currentNoOfRowsStar < 4) return;
+  currentNoOfRowsStar--;
 
   $('#target svg').remove();
-  drawStarplot(currentNoOfRows)
+  drawStarplot(currentNoOfRowsStar)
+});
+$('#flowerMoreDataButton').on('click', function() {
+  if (currentNoOfRowsFlower > 10) return;
+  currentNoOfRowsFlower++;
+
+  $('#flowerTarget svg').remove();
+  drawFlowerplot(currentNoOfRowsFlower)
+});
+$('#flowerLessDataButton').on('click', function() {
+  if (currentNoOfRowsFlower < 4) return;
+  currentNoOfRowsFlower--;
+
+  $('#flowerTarget svg').remove();
+  drawFlowerplot(currentNoOfRowsFlower)
 });
