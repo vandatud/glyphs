@@ -47,6 +47,7 @@ function drawStarplot(noOfRows) {
         .width(width)
         .accessors(accessors)
         .labels(labels)
+        .includeLabels(showStarLabels)
         .title(function(d) { return d.Distillery; })
         .margin(margin)
         .labelMargin(labelMargin)
@@ -105,6 +106,7 @@ function drawFlowerplot(noOfRows) {
         .width(width)
         .accessors(accessors)
         .labels(labels)
+        .includeLabels(showFlowerLabels)
         .title(function(d) { return d.Distillery; }) // unique to whiskies.csv
         .margin(margin)
         .labelMargin(labelMargin)
@@ -128,11 +130,28 @@ function drawFlowerplot(noOfRows) {
 let currentNoOfRowsStar = 6;
 let currentNoOfRowsFlower = 6;
 
+let showFlowerLabels = true;
+let showStarLabels = true;
+
 drawStarplot(currentNoOfRowsStar);
 drawFlowerplot(currentNoOfRowsFlower);
 
 $('#guidelineToggle').on('click', function() { $('.star-axis').toggle(); });
 $('#flowerGuidelineToggle').on('click', function() { $('.flower-axis').toggle(); });
+
+$('#flowerLabelsToggle').on('click', function() {
+  showFlowerLabels = !showFlowerLabels;
+
+  $('#flowerTarget svg').remove();
+  drawFlowerplot(currentNoOfRowsFlower);
+});
+
+$('#starLabelsToggle').on('click', function() {
+  showStarLabels = !showStarLabels;
+
+  $('#target svg').remove();
+  drawStarplot(currentNoOfRowsStar);
+});
 
 $('#moreDataButton').on('click', function() {
   if (currentNoOfRowsStar > 14) return;
