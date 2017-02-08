@@ -13,6 +13,7 @@ var scale = d3.scaleLinear()
   .domain([0, 4])
   .range([0, 100])
 
+// for specifics to whiskies.csv see documentation in drawFlowerplot()
 function drawStarplot(noOfRows) {
   d3.csv('whiskies.csv')
     .row(function(d) {
@@ -67,7 +68,7 @@ function drawStarplot(noOfRows) {
 
 function drawFlowerplot(noOfRows) {
   d3.csv('whiskies.csv')
-    .row(function(d) {
+    .row(function(d) { // all values are set to their absolutes
         d.Body = +d.Body;
         d.Sweetness = +d.Sweetness;
         d.Smoky = +d.Smoky;
@@ -87,26 +88,32 @@ function drawFlowerplot(noOfRows) {
       let accessors = [];
       let pp = 0;
 
+      // get headers of the data-columns
       for (let x in rows[0]) {
         pp++;
+        // in the whiskies.csv, the first three rows and some of the last ones
+        // are not suitable for plotting, therefore ignore those
         if (pp > 3 + noOfRows || pp > 14) break;
         if (pp < 3) continue;
-        labels.push(x);
+        labels.push(x); // name of the column
+        // a linear scale for the current data entry
         accessors.push(function(d) { return scale(d[x]); })
       }
 
+      // setup the flower's attributes
       var flower = d3.flowerPlot()
         .width(width)
         .accessors(accessors)
         .labels(labels)
-        .title(function(d) { return d.Distillery; })
+        .title(function(d) { return d.Distillery; }) // unique to whiskies.csv
         .margin(margin)
         .labelMargin(labelMargin)
 
       rows.forEach(function(d, i) {
 
-        if (i > 3) return; // draw 4 starplots (4 rows of data)
+        if (i > 3) return; // draw at least 4 starplots (4 rows of data)
 
+        // draw the flower
         d3.select('#flowerTarget').append('svg')
           .attr('class', 'chart')
           .attr('width', width + margin.left + margin.right)
@@ -128,7 +135,7 @@ $('#guidelineToggle').on('click', function() { $('.star-axis').toggle(); });
 $('#flowerGuidelineToggle').on('click', function() { $('.flower-axis').toggle(); });
 
 $('#moreDataButton').on('click', function() {
-  if (currentNoOfRowsStar > 10) return;
+  if (currentNoOfRowsStar > 14) return;
   currentNoOfRowsStar++;
 
   $('#target svg').remove();
@@ -142,7 +149,7 @@ $('#lessDataButton').on('click', function() {
   drawStarplot(currentNoOfRowsStar)
 });
 $('#flowerMoreDataButton').on('click', function() {
-  if (currentNoOfRowsFlower > 10) return;
+  if (currentNoOfRowsFlower > 14) return;
   currentNoOfRowsFlower++;
 
   $('#flowerTarget svg').remove();
