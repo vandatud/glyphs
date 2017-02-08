@@ -8,7 +8,7 @@ d3.flowerPlot = function() {
   let title = nop;
 
   let margin = {
-    top: 0,
+    top: 10,
     right: 0,
     bottom: 0,
     left: 0
@@ -69,8 +69,8 @@ d3.flowerPlot = function() {
       let l, x, y;
 
       l = radius;
-      x = (l + labelMargin) * Math.cos(r);
-      y = (l + labelMargin) * Math.sin(r);
+      x = (l + labelMargin + 5) * Math.cos(r);
+      y = (l + labelMargin + 5) * Math.sin(r);
 
       g.append('text')
         .attr('class', 'label')
@@ -92,27 +92,39 @@ d3.flowerPlot = function() {
       .attr('cy', origin[1])
       .attr('r', 2);
 
-    let path = d3.radialLine();
+    let path = d3.line().curve(d3.curveCardinalClosed);
     let color = d3.scaleOrdinal(d3.schemeCategory10);
 
     let r = Math.PI / 2;
 
-    l = radius;
-    x = (l + labelMargin) * Math.cos(r);
-    y = (l + labelMargin) * Math.sin(r);
+    // used to calculate some of the x-coordinates of the petal-path
+    let totalPetalSpace = radians;
+    if (radii <= 5) totalPetalSpace = 1; // tan would be INFINITY
 
     accessors.forEach(function(d) {
 
-      let offset = origin[1] + scale(d(datum)) / 2;
+      let flowerPath = [[0,0]]; // holds all points of the petal-path
 
-      g.append('ellipse')
+      let dx = scale(d(datum)) * Math.tan(totalPetalSpace) * 0.24;
+
+      // the path of a flower petal is set by a cardinal curve through 5 points
+      // The position of these 5 points is scaled by the value of the data entry
+      // to fit the given space
+      flowerPath.push(
+        [0.4*dx, -scale(d(datum))*0.3],
+        [dx, -scale(d(datum))*0.83],
+        [0, -scale(d(datum))],
+        [-dx, -scale(d(datum))*0.83],
+        [-0.4*dx, -scale(d(datum))*0.3])
+
+      // draw the petal of the flower representing one data entry using the
+      // ponts from flowerpath. The resulting path is then rotated and
+      // repositioned to the corresponding space in the flower
+      g.append('path')
         .attr('class', 'flower-path')
+        .attr('d', path(flowerPath) + 'Z')
         .attr('fill', color(d(datum)))
-        .attr('cx', 0)
-        .attr('cy', -scale(d(datum)) / 2)
-        .attr('rx', 10)
-        .attr('ry', scale(d(datum)) / 2)
-        .attr('transform', 'translate('+ origin[0] +','+ origin[1] +')rotate('+ r * 57 +')');
+        .attr('transform', 'translate('+ origin[0] +','+ origin[1] +')rotate('+ r * (180 / Math.PI) +')');
 
       r += radians;
     });
