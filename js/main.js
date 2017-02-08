@@ -54,7 +54,7 @@ function drawStarplot(noOfRows) {
 
       rows.forEach(function(d, i) {
 
-        if (i > 3) return; // draw 4 starplots (4 rows of data)
+        if (i > 11) return; // draw 4 starplots (4 rows of data)
 
         d3.select('#target').append('svg')
           .attr('class', 'chart')
@@ -113,7 +113,7 @@ function drawFlowerplot(noOfRows) {
 
       rows.forEach(function(d, i) {
 
-        if (i > 3) return; // draw at least 4 starplots (4 rows of data)
+        if (i > 11) return;
 
         // draw the flower
         d3.select('#flowerTarget').append('svg')
@@ -127,8 +127,8 @@ function drawFlowerplot(noOfRows) {
     });
 }
 
-let currentNoOfRowsStar = 6;
-let currentNoOfRowsFlower = 6;
+let currentNoOfRowsStar = 5;
+let currentNoOfRowsFlower = 5;
 
 let showFlowerLabels = true;
 let showStarLabels = true;
@@ -140,17 +140,19 @@ $('#guidelineToggle').on('click', function() { $('.star-axis').toggle(); });
 $('#flowerGuidelineToggle').on('click', function() { $('.flower-axis').toggle(); });
 
 $('#flowerLabelsToggle').on('click', function() {
-  showFlowerLabels = !showFlowerLabels;
+  // showFlowerLabels = !showFlowerLabels;
+  // $('#flowerTarget svg').remove();
+  // drawFlowerplot(currentNoOfRowsFlower);
 
-  $('#flowerTarget svg').remove();
-  drawFlowerplot(currentNoOfRowsFlower);
+  $('#flowerTarget svg text').toggle();
 });
 
 $('#starLabelsToggle').on('click', function() {
-  showStarLabels = !showStarLabels;
+  // showStarLabels = !showStarLabels;
+  // $('#target svg').remove();
+  // drawStarplot(currentNoOfRowsStar);
 
-  $('#target svg').remove();
-  drawStarplot(currentNoOfRowsStar);
+  $('#target svg text').toggle();
 });
 
 $('#moreDataButton').on('click', function() {

@@ -12,16 +12,6 @@ body {
   padding: 0.5rem 1.5rem 1.5rem;
   box-shadow: 0px 2px 4px #ccc;
 }
-.slide p {
-  line-height: 1.5;
-  opacity: 0.73;
-}
-.slide .source {
-  font-weight: bold;
-}
-.slide .source > a {
-  font-weight: normal;
-}
 #target, #flowerTarget{
   margin-top: 40px;
 }
@@ -45,13 +35,11 @@ body {
 }
 
 .flower-path {
-  stroke: #444;
+  stroke: #555;
   stroke-width: 1px;
-  fill-opacity: 0.6;
 }
 .star-path {
-  stroke: #444;
+  stroke: #555;
   stroke-width: 2px;
-  fill: #709CB1;
   fill-opacity: 0.6;
 }

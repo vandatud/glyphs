@@ -95,6 +95,9 @@ d3.starPlot = function() {
 
     let pathData = [];
     let r = Math.PI / 2;
+    let c = parseInt(datum.RowID) % 50;
+
+    pallette = '1f77b4aec7e8ff7f0effbb782ca02c98df8ad62728ff98969467bdc5b0d58c564bc49c94e377c2f7b6d27f7f7fc7c7c7bcbd22dbdb8d17becf9edae5';
 
     accessors.forEach(function(d) {
       pathData.push([
@@ -108,6 +111,7 @@ d3.starPlot = function() {
     g.append('path')
       .attr('class', 'star-path')
       .attr('transform', 'translate(' + origin[0] + ',' + origin[1] + ')')
+      .attr('fill', '#' + pallette.substring(c, c+6))
       .attr('d', path(pathData) + 'Z');
 
     g.append('text')

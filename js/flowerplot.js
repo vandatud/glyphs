@@ -92,30 +92,30 @@ d3.flowerPlot = function() {
       .attr('cy', origin[1])
       .attr('r', 2);
 
-    let path = d3.line().curve(d3.curveCardinalClosed);
-    let color = d3.scaleOrdinal(d3.schemeCategory10);
-
+    let path = d3.line().curve(d3.curveBasis);
     let r = Math.PI / 2;
+    let opac = 0;
+    let c = parseInt(datum.RowID) % 50;
 
-    // used to calculate some of the x-coordinates of the petal-path
-    let totalPetalSpace = radians;
-    if (radii <= 5) totalPetalSpace = 1; // tan would be INFINITY
+    pallette = '1f77b4aec7e8ff7f0effbb782ca02c98df8ad62728ff98969467bdc5b0d58c564bc49c94e377c2f7b6d27f7f7fc7c7c7bcbd22dbdb8d17becf9edae5';
 
     accessors.forEach(function(d) {
 
       let flowerPath = [[0,0]]; // holds all points of the petal-path
-
-      let dx = scale(d(datum)) * Math.tan(totalPetalSpace) * 0.24;
+      let value = scale(d(datum));
 
       // the path of a flower petal is set by a cardinal curve through 5 points
       // The position of these 5 points is scaled by the value of the data entry
       // to fit the given space
-      flowerPath.push(
-        [0.4*dx, -scale(d(datum))*0.3],
-        [dx, -scale(d(datum))*0.83],
-        [0, -scale(d(datum))],
-        [-dx, -scale(d(datum))*0.83],
-        [-0.4*dx, -scale(d(datum))*0.3])
+      if (value > 0)
+        flowerPath.push(
+          [0,0],
+          [0,   -value * 0.4],
+          [10,  -value],
+          [0,   -value],
+          [-10, -value],
+          [0,   -value * 0.4],
+          [0,0]);
 
       // draw the petal of the flower representing one data entry using the
       // ponts from flowerpath. The resulting path is then rotated and
@@ -123,7 +123,8 @@ d3.flowerPlot = function() {
       g.append('path')
         .attr('class', 'flower-path')
         .attr('d', path(flowerPath) + 'Z')
-        .attr('fill', color(d(datum)))
+        .attr('fill', '#' + pallette.substring(c, c + 6))
+        .attr('fill-opacity', opac++ / accessors.length)
         .attr('transform', 'translate('+ origin[0] +','+ origin[1] +')rotate('+ r * (180 / Math.PI) +')');
 
       r += radians;
