@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Visualisierungstypen</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="./css/style.css"></style>
+</head>
+<body>
+  <h1>Comparison between visualisation techniques</h1>
+  <div class="slide" id="flowerplot">
+    <h2>Flowerplot</h2>
+    <div>
+      <input id="flowerGuidelineToggle" type="button" value="Guidelines" />
+      <input id="flowerLabelsToggle" type="button" value="Labels" />
+      <input id="flowerMoreDataButton" type="button" value="more" style="float:right" />
+      <input id="flowerLessDataButton" type="button" value="less" style="float:right" />
+      <span id="flowerRowsCounter" style="float:right;margin-right:2rem;font-weight:bolder"></span>
+    </div>
+    <div id="flowerTarget"></div>
+  </div>
+  <div class="slide" id="starplot">
+    <h2>Starplot</h2>
+    <div>
+      <input id="guidelineToggle" type="button" value="Guidelines" />
+      <input id="starLabelsToggle" type="button" value="Labels" />
+      <input id="moreDataButton" type="button" value="more" style="float:right" />
+      <input id="lessDataButton" type="button" value="less" style="float:right" />
+      <span id="starRowsCounter" class="float:right;margin-right:2rem;font-weight:bolder"></span>
+    </div>
+    <div id="target"></div>
+  </div>
+
+  <script type="text/javascript;version=1.8" src="./js/plugins/jquery.js"></script>
+  <script type="text/javascript;version=1.8" src="./js/plugins/d3_min.js"></script>
+  <script type="text/javascript;version=1.8" src="./js/starplot.js"></script>
+  <script type="text/javascript;version=1.8" src="./js/flowerplot.js"></script>
+  <script type="text/javascript;version=1.8" src="./js/main.js"></script>
+</body>
+</html>
