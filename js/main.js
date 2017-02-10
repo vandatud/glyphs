@@ -57,11 +57,12 @@ function drawStarplot(noOfRows) {
         if (i > 11) return; // draw 4 starplots (4 rows of data)
 
         d3.select('#target').append('svg')
+          .datum(d)
           .attr('class', 'chart')
           .attr('width', width + margin.left + margin.right)
           .attr('height', width + margin.top + margin.bottom)
+          .on('click', debug)
           .append('g')
-            .datum(d)
             .call(star)
       });
     });
@@ -118,15 +119,20 @@ function drawFlowerplot(noOfRows) {
 
         // draw the flower
         d3.select('#flowerTarget').append('svg')
+          .datum(d)
           .attr('class', 'chart')
           .attr('width', width + margin.left + margin.right)
           .attr('height', width + margin.top + margin.bottom)
+          .on('click', debug)
           .append('g')
-            .datum(d)
             .call(flower)
       });
     });
     $('#flowerRowsCounter').text("Achsen: " + (currentNoOfRowsFlower+1));
+}
+
+function debug(d) {
+  console.debug('Click: ' + d.toSource());
 }
 
 let currentNoOfRowsStar = 5;
