@@ -92,17 +92,22 @@ d3.flowerPlot = function() {
       .attr('cy', origin[1])
       .attr('r', 2);
 
-    let path = d3.line().curve(d3.curveBasis);
-    let r = Math.PI / 2;
-    let opac = 0;
-    let c = parseInt(datum.RowID) % 50;
+    let path = d3.line().curve(d3.curveBasis); // use b-splines to draw petals
+    let r = Math.PI / 2; // degree in which petal points in rad
+    let c = parseInt(datum.RowID) % 50; // index in the color pallette
 
+    // allows for 119 seemingly random colors by taking 6 following digits and
+    // shifting by one with each glyph
     let pallette = '1f77b4aec7e8ff7f0effbb782ca02c98df8ad62728ff98969467bdc5b0d58c564bc49c94e377c2f7b6d27f7f7fc7c7c7bcbd22dbdb8d17becf9edae5';
 
-    accessors.forEach(function(d) {
+    accessors.forEach(function(d, opac) {
 
       let flowerPath = [[0,0]]; // holds all points of the petal-path
       let value = scale(d(datum));
+
+      let o = opac / (accessors.length);
+      if (o > 0.95) o = 0.95;
+      if (o < 0.2) o = 0.2;
 
       // the path of a flower petal is set by a cardinal curve through 5 points
       // The position of these 5 points is scaled by the value of the data entry
@@ -124,7 +129,7 @@ d3.flowerPlot = function() {
         .attr('class', 'flower-path')
         .attr('d', path(flowerPath) + 'Z')
         .attr('fill', '#' + pallette.substring(c, c + 6))
-        .attr('fill-opacity', opac++ / accessors.length)
+        .attr('fill-opacity', o)
         .attr('transform', 'translate('+ origin[0] +','+ origin[1] +')rotate('+ r * (180 / Math.PI) +')');
 
       r += radians;
