@@ -6,7 +6,7 @@ d3.flowerPlot = function() {
   let accessors = [];
   let labels = [];
   let title = nop;
-  let petalScale = 0.115; // used to change the size of the tip of petals
+  let petalScale = 0.23; // used to change the size of the tip of petals
 
   let margin = {
     top: 0,
@@ -101,13 +101,9 @@ d3.flowerPlot = function() {
     // shifting by one with each glyph
     let pallette = '1f77b4aec7e8ff7f0effbb782ca02c98df8ad62728ff98969467bdc5b0d58c564bc49c94e377c2f7b6d27f7f7fc7c7c7bcbd22dbdb8d17becf9edae5';
 
-    // used below to calculate size of peta-tip
-    let totalPetalSpace = radians;
-    if (radii === 4) totalPetalSpace = 1; // Math.tan of 90° would be INFINITY
-
     accessors.forEach(function(d, i) {
 
-      let flowerPath = [[0,0]]; // holds all points of the petal-path
+      let flowerPath = []; // holds all points of the petal-path
       let value = scale(d(datum));
 
       // opacity must not be close to zero or close to one so use value in
@@ -119,11 +115,10 @@ d3.flowerPlot = function() {
       o += 0.15; // guarantee values above 0.1 as opacity
 
       // calculate the width of the tip of the petal using the value of the
-      // petal. Increase
-      let dx = value * Math.tan(totalPetalSpace) * petalScale;
+      // petal. Increase very small values
+      let dx = value * petalScale;
       if (dx <= 3)
         dx *= 2;
-
 
       // the path of a flower petal is set by a cardinal curve through 5 points
       // The position of these 5 points is scaled by the value of the data entry
@@ -131,11 +126,11 @@ d3.flowerPlot = function() {
       if (value > 0)
         flowerPath.push(
           [0, 0],
-          [0.25*dx, -value * (10 / 18)],
-          [dx,  -value],
+          [0.25*dx, -value * (10 / 19)],
+          [dx,  -value * 0.85],
           [0, -value],
-          [-dx,  -value],
-          [-0.25*dx, -value * (10 / 18)],
+          [-dx,  -value * 0.85],
+          [-0.25*dx, -value * (10 / 19)],
           [0, 0])
 
       // draw the petal of the flower representing one data entry using the
@@ -147,7 +142,6 @@ d3.flowerPlot = function() {
         .attr('fill', '#' + pallette.substring(c, c + 6))
         .attr('fill-opacity', o)
         .attr('transform', 'translate('+ origin[0] +','+ origin[1] +')rotate('+ r * (180 / Math.PI) +')');
-
       r += radians;
     });
 
