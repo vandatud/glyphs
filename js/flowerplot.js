@@ -6,6 +6,7 @@ d3.flowerPlot = function() {
   let accessors = [];
   let labels = [];
   let title = nop;
+  let petalScale = 0.115; // used to change the size of the tip of petals
 
   let margin = {
     top: 0,
@@ -100,27 +101,42 @@ d3.flowerPlot = function() {
     // shifting by one with each glyph
     let pallette = '1f77b4aec7e8ff7f0effbb782ca02c98df8ad62728ff98969467bdc5b0d58c564bc49c94e377c2f7b6d27f7f7fc7c7c7bcbd22dbdb8d17becf9edae5';
 
-    accessors.forEach(function(d, opac) {
+    // used below to calculate size of peta-tip
+    let totalPetalSpace = radians;
+    if (radii === 4) totalPetalSpace = 1; // Math.tan of 90° would be INFINITY
+
+    accessors.forEach(function(d, i) {
 
       let flowerPath = [[0,0]]; // holds all points of the petal-path
       let value = scale(d(datum));
 
-      let o = opac / (accessors.length);
-      if (o > 0.95) o = 0.95;
-      if (o < 0.2) o = 0.2;
+      // opacity must not be close to zero or close to one so use value in
+      // between to allow differntiation of neighboring petals
+      // if maxO is greater than the maximum value of i, the opaciy will always
+      // be lower than 1.0
+      let maxO = accessors.length * 1.2;
+      let o = i / maxO; // will yield an opacity below 1.0
+      o += 0.15; // guarantee values above 0.1 as opacity
+
+      // calculate the width of the tip of the petal using the value of the
+      // petal. Increase
+      let dx = value * Math.tan(totalPetalSpace) * petalScale;
+      if (dx <= 3)
+        dx *= 2;
+
 
       // the path of a flower petal is set by a cardinal curve through 5 points
       // The position of these 5 points is scaled by the value of the data entry
       // to fit the given space
       if (value > 0)
         flowerPath.push(
-          [0,0],
-          [0,   -value * (10 / 18)],
-          [10,  -value],
-          [0,   -value],
-          [-10, -value],
-          [0,   -value * (10 / 18)],
-          [0,0]);
+          [0, 0],
+          [0.25*dx, -value * (10 / 18)],
+          [dx,  -value],
+          [0, -value],
+          [-dx,  -value],
+          [-0.25*dx, -value * (10 / 18)],
+          [0, 0])
 
       // draw the petal of the flower representing one data entry using the
       // ponts from flowerpath. The resulting path is then rotated and
@@ -198,6 +214,12 @@ d3.flowerPlot = function() {
   chart.includeLabels = function(_) {
     if (!arguments.length) return includeLabels;
     includeLabels = _;
+    return chart;
+  };
+
+  chart.petalScale = function(_) {
+    if (!arguments.legnth) return petalScale;
+    petalScale = _;
     return chart;
   };
 
