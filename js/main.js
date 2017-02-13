@@ -112,6 +112,7 @@ function drawFlowerplot(noOfRows) {
         .title(function(d) { return d.Distillery; }) // unique to whiskies.csv
         .margin(margin)
         .labelMargin(labelMargin)
+        .petalScale(0.23)
 
       rows.forEach(function(d, i) {
 

@@ -212,7 +212,7 @@ d3.flowerPlot = function() {
   };
 
   chart.petalScale = function(_) {
-    if (!arguments.legnth) return petalScale;
+    if (!arguments.length) return petalScale;
     petalScale = _;
     return chart;
   };
