@@ -2,22 +2,20 @@
 Allows to create Starplots and similar visualisation with flower-petals using
 d3.
 
-## Colors Pallette
-Both [flowerplot](js/flowerplot.js) and [starplot](js/starplot.js) contain (at least for
-now) a hard-coded color palette, which is a string of hex-values representing
-RGB color codes. The variable for pallette in both cases can be found in line
-100 of the corresponding file. From this string, a 6-digit substring is then
-used to get the color for the glyph (lines 114 and 126).
+## Color Palette
+Both [flowerplot](js/flowerplot.js) and [starplot](js/starplot.js) contain a
+color palette, which is a string of hex-values representing
+RGB color codes. Using an ordinal scale for which the ``Category`` Attribute
+serves as the domain and a predefined color pallette as range, a brightness
+value substring is picked.
 
-To change the colors, the whole process of picking one could either be replaced
-with a more elegant approach like d3's functionality for color pallettes or by
-simply replacing the string with another color-scheme.
+Both flower- and starplots currently work with a preset color scheme holding
+five different hue values. The domain and the range (--> colors) can be adapted
+by calling the corresponding ``.colorDomain()`` and ``.colorRange()`` functions.
 
-## Transparency of petals
-The transparency for the flower-petals is currently calculated by using a
-the index of the current petal on the total numberof  petals. Therfore the first
-"drawn" petal is the most and the last one the least transparent. (Will be
-adapted, see #3)
+## Brightness of petals
+The individual petal-color is a substring from the color palette for the current
+flower (line 138 in [flowerplot.js](js/flowerplot.js)).
 
 ## Changing the petal layout
 The Layout of the flowerplot's petals can be changed by placing new control
