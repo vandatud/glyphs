@@ -8,6 +8,14 @@ d3.flowerPlot = function() {
   let title = nop;
   let petalScale = 0.23; // used to change the size of the tip of petals
 
+  let colorDomain = ['arts/entertainment/nightlife',
+    'sports/recreation/activities', 'education', 'musician/band',
+    'travel/leisure', 'health/beauty'];
+  let colorRange = ['99BABC5F8F913A7477205D600B4144',
+    'FFFACFF0E79DC5BA60A09435716711', 'FFE5CFF0C49DC58E60A06635713D11',
+    'DFF1C4BEDD908FB5586B9331446810', 'B4A6C98470A3604786442B6D29124D',
+    'E4B9CDCA84A4A55177862D555F0E33'];
+
   let margin = {
     top: 0,
     right: 0,
@@ -26,6 +34,10 @@ d3.flowerPlot = function() {
   let scale = d3.scaleLinear()
         .domain([0, 100])
         .range([0, radius]);
+
+  let color = d3.scaleOrdinal()
+    .domain(colorDomain)
+    .range(colorRange);
 
   function chart(selection) {
     datum = selection.datum();
@@ -95,24 +107,11 @@ d3.flowerPlot = function() {
 
     let path = d3.line().curve(d3.curveBasis); // use b-splines to draw petals
     let r = Math.PI / 2; // degree in which petal points in rad
-    let c = parseInt(datum.RowID) % 50; // index in the color pallette
-
-    // allows for 119 seemingly random colors by taking 6 following digits and
-    // shifting by one with each glyph
-    let pallette = '1f77b4aec7e8ff7f0effbb782ca02c98df8ad62728ff98969467bdc5b0d58c564bc49c94e377c2f7b6d27f7f7fc7c7c7bcbd22dbdb8d17becf9edae5';
 
     accessors.forEach(function(d, i) {
 
       let flowerPath = []; // holds all points of the petal-path
       let value = scale(d(datum));
-
-      // opacity must not be close to zero or close to one so use value in
-      // between to allow differntiation of neighboring petals
-      // if maxO is greater than the maximum value of i, the opaciy will always
-      // be lower than 1.0
-      let maxO = accessors.length * 1.2;
-      let o = i / maxO; // will yield an opacity below 1.0
-      o += 0.15; // guarantee values above 0.1 as opacity
 
       // calculate the width of the tip of the petal using the value of the
       // petal. Increase very small values
@@ -120,9 +119,6 @@ d3.flowerPlot = function() {
       if (dx <= 3)
         dx *= 2;
 
-      // the path of a flower petal is set by a cardinal curve through 5 points
-      // The position of these 5 points is scaled by the value of the data entry
-      // to fit the given space
       if (value > 0)
         flowerPath.push(
           [0, 0],
@@ -139,8 +135,8 @@ d3.flowerPlot = function() {
       g.append('path')
         .attr('class', 'flower-path')
         .attr('d', path(flowerPath) + 'Z')
-        .attr('fill', '#' + pallette.substring(c, c + 6))
-        .attr('fill-opacity', o)
+        .attr('fill', '#' + color(datum.Category).substring(i*6, i*6 + 6))
+        .attr('stroke', '#' + color(datum.Category).substring(12, 18))
         .attr('transform', 'translate('+ origin[0] +','+ origin[1] +')rotate('+ r * (180 / Math.PI) +')');
       r += radians;
     });
@@ -208,6 +204,18 @@ d3.flowerPlot = function() {
   chart.includeLabels = function(_) {
     if (!arguments.length) return includeLabels;
     includeLabels = _;
+    return chart;
+  };
+
+  chart.colorDomain = function(_) {
+    if(!arguments.length) return colorDomain;
+    colorDomain = _;
+    return chart;
+  };
+
+  chart.colorRange = function(_) {
+    if(!arguments.length) return colorRange;
+    colorRange = _;
     return chart;
   };
 
