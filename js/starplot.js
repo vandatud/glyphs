@@ -7,6 +7,11 @@ d3.starPlot = function() {
   let labels = [];
   let title = nop;
 
+  let colorDomain = ['arts/entertainment/nightlife',
+    'sports/recreation/activities', 'education', 'musician/band',
+    'travel/leisure', 'health/beauty'];
+  let colorRange = ['3A7477', 'C5BA60', 'C58E60', '8FB558', '604786', 'A55177'];
+
   let margin = {
     top: 0,
     right: 0,
@@ -25,6 +30,10 @@ d3.starPlot = function() {
   let scale = d3.scaleLinear()
         .domain([0, 100])
         .range([0, radius]);
+
+  let color = d3.scaleOrdinal()
+    .domain(colorDomain)
+    .range(colorRange);
 
   function chart(selection) {
     datum = selection.datum();
@@ -95,9 +104,6 @@ d3.starPlot = function() {
 
     let pathData = [];
     let r = Math.PI / 2;
-    let c = parseInt(datum.RowID) % 50;
-
-    let pallette = '1f77b4aec7e8ff7f0effbb782ca02c98df8ad62728ff98969467bdc5b0d58c564bc49c94e377c2f7b6d27f7f7fc7c7c7bcbd22dbdb8d17becf9edae5';
 
     accessors.forEach(function(d) {
       pathData.push([
@@ -111,7 +117,7 @@ d3.starPlot = function() {
     g.append('path')
       .attr('class', 'star-path')
       .attr('transform', 'translate(' + origin[0] + ',' + origin[1] + ')')
-      .attr('fill', '#' + pallette.substring(c, c+6))
+      .attr('fill', '#' + color(datum.Category))
       .attr('d', path(pathData) + 'Z');
 
     g.append('text')
@@ -180,5 +186,17 @@ d3.starPlot = function() {
     return chart;
   };
 
+  chart.colorDomain = function(_) {
+    if(!arguments.length) return colorDomain;
+    colorDomain = _;
+    return chart;
+  };
+
+  chart.colorRange = function(_) {
+    if(!arguments.length) return colorRange;
+    colorRange = _;
+    return chart;
+  };
+  
   return chart;
 }
