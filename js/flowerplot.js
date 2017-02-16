@@ -105,6 +105,12 @@ d3.flowerPlot = function() {
       .attr('cy', origin[1])
       .attr('r', 2);
 
+    g.append('circle')
+      .attr('class', 'flower-ring')
+      .attr('cx', origin[0])
+      .attr('cy', origin[1])
+      .attr('r', width / 2);
+
     let path = d3.line().curve(d3.curveBasis); // use b-splines to draw petals
     let r = Math.PI / 2; // degree in which petal points in rad
 
