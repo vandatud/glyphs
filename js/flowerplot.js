@@ -6,7 +6,7 @@ d3.flowerPlot = function() {
   let accessors = [];
   let labels = [];
   let title = nop;
-  let petalScale = 0.23; // used to change the size of the tip of petals
+  let petalScale = 0.29; // used to change the size of the tip of petals
 
   let colorDomain = ['arts/entertainment/nightlife',
     'sports/recreation/activities', 'education', 'musician/band',
