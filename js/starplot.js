@@ -9,7 +9,7 @@ d3.starPlot = function() {
 
   let colorDomain = ['arts/entertainment/nightlife',
     'sports/recreation/activities', 'education', 'musician/band',
-    'travel/leisure', 'health/beauty'];
+    'tours/sightseeing', 'health/beauty'];
   let colorRange = ['3A7477', 'C5BA60', 'C58E60', '8FB558', '604786', 'A55177'];
 
   let margin = {
