@@ -3,6 +3,7 @@ d3.flowerPlot = function() {
   let labelMargin = 20;
   let includeGuidelines = true;
   let includeLabels = true;
+  let useBrightnessIndication = true;
   let accessors = [];
   let labels = [];
   let title = nop;
@@ -38,6 +39,12 @@ d3.flowerPlot = function() {
   let color = d3.scaleOrdinal()
     .domain(colorDomain)
     .range(colorRange);
+
+  // adapt the scale dynamically to changes of the colorRange: The longer the
+  // string for one single category, the more possible inttensities are possible
+  let intensity = d3.scaleLinear()
+    .domain([0, 100])
+    .range([0, colorRange[0].length/6 - 1]);
 
   function chart(selection) {
     datum = selection.datum();
@@ -141,7 +148,14 @@ d3.flowerPlot = function() {
       g.append('path')
         .attr('class', 'flower-path')
         .attr('d', path(flowerPath) + 'Z')
-        .attr('fill', '#' + color(datum.Category).substring(i*6, i*6 + 6))
+        .attr('fill', function() {
+          let b = i; // brightness index in the color palette
+
+          if (useBrightnessIndication)
+            b = parseInt(intensity(d(datum)));
+
+          return '#' + color(datum.Category).substring(b*6, b*6 + 6);
+        })
         .attr('stroke', '#' + color(datum.Category).substring(12, 18))
         .attr('transform', 'translate('+ origin[0] +','+ origin[1] +')rotate('+ r * (180 / Math.PI) +')');
       r += radians;
@@ -228,6 +242,12 @@ d3.flowerPlot = function() {
   chart.petalScale = function(_) {
     if (!arguments.length) return petalScale;
     petalScale = _;
+    return chart;
+  };
+
+  chart.useBrightnessIndication = function(_) {
+    if (!arguments.length) return useBrightnessIndication;
+    useBrightnessIndication = _;
     return chart;
   };
 
