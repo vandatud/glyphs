@@ -114,7 +114,7 @@ d3.flowerPlot = function() {
       .attr('class', 'flower-ring')
       .attr('cx', origin[0])
       .attr('cy', origin[1])
-      .attr('r', width / 2);
+      .attr('r', radius);
 
     let path = d3.line().curve(d3.curveBasis); // use b-splines to draw petals
     let r = Math.PI / 2; // degree in which petal points in rad
@@ -133,11 +133,11 @@ d3.flowerPlot = function() {
       if (value > 0)
         flowerPath.push(
           [0, 0],
-          [0.25*dx, -value * (10 / 19)],
-          [dx,  -value * 0.85],
-          [0, -value],
-          [-dx,  -value * 0.85],
-          [-0.25*dx, -value * (10 / 19)],
+          [0.2*dx, -value * (10 / 19)],
+          [dx,  -value * 0.89],
+          [0, -value * 1.03],
+          [-dx,  -value * 0.89],
+          [-0.2*dx, -value * (10 / 19)],
           [0, 0])
 
       // draw the petal of the flower representing one data entry using the
@@ -147,10 +147,11 @@ d3.flowerPlot = function() {
         .attr('class', 'flower-path')
         .attr('d', path(flowerPath) + 'Z')
         .attr('fill', function() {
-          let b = i; // brightness index in the color palette
+          let b; // brightness index in the color palette
 
-          if (useBrightnessIndication)
-            b = parseInt(intensity(d(datum)));
+          useBrightnessIndication
+            ? b = parseInt(intensity(d(datum)))
+            : b = i;
 
           return '#' + color(datum.Category).substring(b*6, b*6 + 6);
         })
