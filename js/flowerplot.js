@@ -228,12 +228,19 @@ d3.flowerPlot = function() {
   chart.colorDomain = function(_) {
     if(!arguments.length) return colorDomain;
     colorDomain = _;
+
+    color.domain(colorDomain);
+
     return chart;
   };
 
   chart.colorRange = function(_) {
     if(!arguments.length) return colorRange;
     colorRange = _;
+
+    color.domain(colorDomain).range(colorRange);
+    intensity.range([0, colorRange[0].length/6 - 1]);
+
     return chart;
   };
 
