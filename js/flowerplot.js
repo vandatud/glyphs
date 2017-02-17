@@ -8,9 +8,7 @@ d3.flowerPlot = function() {
   let title = nop;
   let petalScale = 0.29; // used to change the size of the tip of petals
 
-  let colorDomain = ['arts/entertainment/nightlife',
-    'sports/recreation/activities', 'education', 'musician/band',
-    'tours/sightseeing', 'health/beauty'];
+  let colorDomain = ['Entertainment', 'Sport', 'Bildung', 'Band', 'Tourismus', 'Beauty'];
   let colorRange = ['99BABC5F8F913A7477205D600B4144',
     'FFFACFF0E79DC5BA60A09435716711', 'FFE5CFF0C49DC58E60A06635713D11',
     'DFF1C4BEDD908FB5586B9331446810', 'B4A6C98470A3604786442B6D29124D',
