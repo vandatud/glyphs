@@ -8,7 +8,7 @@ d3.starPlot = function() {
   let title = nop;
 
   let colorDomain = ['Entertainment', 'Sport', 'Bildung', 'Band', 'Tourismus', 'Beauty'];
-  let colorRange = ['3A7477', 'C5BA60', 'C58E60', '8FB558', '604786', 'A55177'];
+  let colorRange = ['3A7477', 'E1CE94', 'C57D60', '8FB558', '604786', 'A55177'];
 
   let margin = {
     top: 0,
