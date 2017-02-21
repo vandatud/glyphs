@@ -10,9 +10,9 @@ d3.flowerPlot = function() {
   let petalScale = 0.29; // used to change the size of the tip of petals
 
   let colorDomain = ['Entertainment', 'Sport', 'Bildung', 'Band', 'Tourismus', 'Beauty'];
-  let colorRange = ['3A74773A74773A74773A74773A7477',
+  let colorRange = ['46A9AE46A9AE46A9AE46A9AE46A9AE',
     'E1CE94E1CE94E1CE94E1CE94E1CE94', 'C57D60C57D60C57D60C57D60C57D60',
-    '8FB5588FB5588FB5588FB5588FB558', '604786604786604786604786604786',
+    '8FB5588FB5588FB5588FB5588FB558', '8768C88768C88768C88768C88768C8',
     'A55177A55177A55177A55177A55177'];
 
   let margin = {
