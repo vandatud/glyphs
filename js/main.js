@@ -119,13 +119,12 @@ function drawFlowerplot(noOfRows) {
         if (i > 11) return;
 
         // draw the flower
-        d3.select('#flowerTarget').append('svg')
+        d3.select('#flowerTarget').append('canvas')
           .datum(d)
           .attr('class', 'chart')
           .attr('width', width + margin.left + margin.right)
           .attr('height', width + margin.top + margin.bottom)
           .on('click', debug)
-          .append('g')
             .call(flower)
       });
     });
@@ -139,7 +138,7 @@ function debug(d) {
 let currentNoOfRowsStar = 5;
 let currentNoOfRowsFlower = 5;
 
-let showFlowerLabels = true;
+let showFlowerLabels = false;
 let showStarLabels = true;
 
 drawStarplot(currentNoOfRowsStar);

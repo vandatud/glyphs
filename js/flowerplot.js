@@ -1,7 +1,7 @@
 d3.flowerPlot = function() {
   let width = 200;
   let labelMargin = 20;
-  let includeGuidelines = true;
+  let includeGuidelines = false;
   let includeLabels = true;
   let useBrightnessIndication = true;
   let accessors = [];
@@ -22,8 +22,10 @@ d3.flowerPlot = function() {
     left: 0
   };
 
-  let g;
   let datum;
+  let context;
+  let originX;
+  let originY;
 
   let radius = width / 2;
   let origin = [radius, radius];
@@ -46,8 +48,13 @@ d3.flowerPlot = function() {
 
   function chart(selection) {
     datum = selection.datum();
-    g = selection
-      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+
+    context = selection.node().getContext('2d');
+
+    originX = origin[0] + margin.left;
+    originY = origin[1] + margin.top;
+
+    context.translate(originX, originY);
 
     if (includeGuidelines) {
       drawGuidelines();
@@ -60,7 +67,12 @@ d3.flowerPlot = function() {
   }
 
   function drawGuidelines() {
+    context.save();
     let r = 0;
+
+    context.beginPath();
+    context.strokeStyle = '#ccc';
+    context.lineWidth = 1;
 
     accessors.forEach(function(d, i) {
       let l, x, y;
@@ -68,20 +80,20 @@ d3.flowerPlot = function() {
       l = radius;
       x = l * Math.cos(r);
       y = l * Math.sin(r);
-
-      g.append('line')
-        .attr('class', 'flower-axis')
-        .attr('x1', origin[0])
-        .attr('y1', origin[1])
-        .attr('x2', origin[0] + x)
-        .attr('y2', origin[1] + y)
+      context.moveTo(0, 0)
+      context.lineTo(x, y, 2);
 
       r += radians;
-    })
+    });
+
+    context.stroke();
+    context.restore();
   }
 
   function drawLabels() {
     let r = 0;
+    context.beginPath();
+    context.textAlign = 'center';
 
     accessors.forEach(function(d, i) {
       let l, x, y;
@@ -90,13 +102,7 @@ d3.flowerPlot = function() {
       x = (l + labelMargin + 5) * Math.cos(r);
       y = (l + labelMargin + 5) * Math.sin(r);
 
-      g.append('text')
-        .attr('class', 'label')
-        .attr('x', origin[0] + x)
-        .attr('y', origin[1] + y)
-        .text(labels[i])
-        .style('text-anchor', 'middle')
-        .style('dominant-baseline', 'central')
+      context.fillText(labels[i], x, y);
 
       r += radians;
     })
@@ -104,22 +110,23 @@ d3.flowerPlot = function() {
 
   function drawChart() {
     // circle in center of the diagram
-    g.append('circle')
-      .attr('class', 'origin')
-      .attr('cx', origin[0])
-      .attr('cy', origin[1])
-      .attr('r', 2);
+    context.save();
+    context.beginPath();
 
-    g.append('circle')
-      .attr('class', 'flower-ring')
-      .attr('cx', origin[0])
-      .attr('cy', origin[1])
-      .attr('r', radius);
+    // draw maximum-value circle
+    context.strokeStyle = '#ccc';
+    context.lineWidth = 1;
+    context.arc(0, 0, radius, 0, 2 * Math.PI);
+    context.stroke();
 
     let path = d3.line().curve(d3.curveBasis); // use b-splines to draw petals
     let r = Math.PI / 2; // degree in which petal points in rad
 
+    let fill;
+
     accessors.forEach(function(d, i) {
+      context.save();
+      context.rotate(r);
 
       let flowerPath = []; // holds all points of the petal-path
       let value = scale(d(datum));
@@ -130,42 +137,43 @@ d3.flowerPlot = function() {
       if (dx <= 3)
         dx *= 2;
 
-      if (value > 0)
-        flowerPath.push(
-          [0, 0],
-          [0.2*dx, -value * (10 / 19)],
-          [dx,  -value * 0.89],
-          [0, -value * 1.03],
-          [-dx,  -value * 0.89],
-          [-0.2*dx, -value * (10 / 19)],
-          [0, 0])
+      let b; // brightness index
+
+      useBrightnessIndication
+        ? b = parseInt(intensity(d(datum)))
+        : b = i;
+
+      fill = '#' + color(datum.Category).substring(b*6, b*6 + 6);
 
       // draw the petal of the flower representing one data entry using the
       // ponts from flowerpath. The resulting path is then rotated and
       // repositioned to the corresponding space in the flower
-      g.append('path')
-        .attr('class', 'flower-path')
-        .attr('d', path(flowerPath) + 'Z')
-        .attr('fill', function() {
-          let b; // brightness index in the color palette
+      if (value > 0)
+        flowerPath.push(
+          [0, 0],
+          [0.2*dx, -value * (10 / 19)],
+          [dx, -value * 0.89],
+          [0, -value * 1.03],
+          [-dx, -value * 0.89],
+          [-0.2*dx, -value * (10 / 19)],
+          [0, 0]);
 
-          useBrightnessIndication
-            ? b = parseInt(intensity(d(datum)))
-            : b = i;
+      // hack: generate the path using svg-functionality and use it later for
+      // canvas
+      let p = d3.select('body').append('path').attr('d', path(flowerPath) + 'Z')
 
-          return '#' + color(datum.Category).substring(b*6, b*6 + 6);
-        })
-        .attr('stroke', '#' + color(datum.Category).substring(12, 18))
-        .attr('transform', 'translate('+ origin[0] +','+ origin[1] +')rotate('+ r * (180 / Math.PI) +')');
+      let px = new Path2D(p.attr('d')); // use the path generated in svg
+      context.strokeStyle = '#' + color(datum.Category).substring(12, 18);
+      context.stroke(px);
+
+      context.fillStyle = fill;
+      context.fill(px);
+
       r += radians;
+      context.restore();
     });
 
-    g.append('text')
-      .attr('class', 'title')
-      .attr('x', origin[0])
-      .attr('y', -(margin.top / 2))
-      .text(title(datum))
-      .style('text-anchor', 'middle');
+    context.restore();
   }
 
   function nop() {
